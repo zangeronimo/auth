@@ -11,20 +11,20 @@ func Hello() string {
 
 //BasicRequest populate this struct with BasicAuth username and password geted in client request
 type BasicRequest struct {
-	reqUsername string
-	reqPassword string
+	ReqUsername string
+	ReqPassword string
 }
 
 //BasicLocal create this struct with Basic username and password requested in your project
 type BasicLocal struct {
-	locUsername string
-	locPassword string
+	LocUsername string
+	LocPassword string
 }
 
 //BasicAuth authentication with basic login, use this to validate a request for a new JWT
 func BasicAuth(basicRequest BasicRequest, basicLocal BasicLocal) (bool, error) {
-	if (basicRequest.reqUsername == basicLocal.locUsername) &&
-		(basicRequest.reqPassword == basicLocal.locPassword) {
+	if (basicRequest.ReqUsername == basicLocal.LocUsername) &&
+		(basicRequest.ReqPassword == basicLocal.LocPassword) {
 		return true, nil
 	}
 	return false, fmt.Errorf("authorization failed")
