@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -17,8 +16,8 @@ var sampleSecret = ""
 
 type Payload struct {
 	Values interface{}
-	Iss string
-	Exp int
+	Iss    string
+	Exp    int
 }
 
 var PayloadValues Payload
@@ -60,7 +59,7 @@ func basicAuth(r *http.Request) error {
 func Login(w http.ResponseWriter, r *http.Request) {
 	err := basicAuth(r)
 	if err != nil {
-		http.Error(w, { msg: err.Error() }, http.StatusUnauthorized)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
