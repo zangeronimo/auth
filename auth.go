@@ -13,6 +13,20 @@ import (
 
 var basicUser = ""
 var basicPass = ""
+var sampleSecret = ""
+
+type Payload struct {
+	Values interface{}
+	Iss string
+	Exp int
+}
+
+var PayloadValues Payload
+
+//SetBasicUser add a basic username to validade a basic login
+func SetSampleSecret(ss string) {
+	sampleSecret = ss
+}
 
 //SetBasicUser add a basic username to validade a basic login
 func SetBasicUser(bu string) {
@@ -46,19 +60,22 @@ func basicAuth(r *http.Request) error {
 func Login(w http.ResponseWriter, r *http.Request) {
 	err := basicAuth(r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		http.Error(w, { msg: err.Error() }, http.StatusUnauthorized)
 		return
 	}
 
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
+	const iat = time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"foo": "bar",
-		"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		PayloadValues.Values,
+		"iss": PayloadValues.Iss,
+		"exp": iat + PayloadValues.Exp,
+		"iat": iat,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString([]byte(os.Getenv("SAMPLESECRET")))
+	tokenString, err := token.SignedString([]byte(sampleSecret))
 
 	fmt.Println(tokenString, err)
 	fmt.Fprintf(w, "Hello, %s - Err %s!", tokenString, err)
