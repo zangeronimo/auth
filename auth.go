@@ -4,7 +4,3 @@ package auth
 func Hello() string {
 	return "Hello world."
 }
-
-func main() {
-
-}
