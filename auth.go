@@ -13,7 +13,6 @@ import (
 var basicUser = ""
 var basicPass = ""
 var sampleSecret = ""
-var payload Payload
 
 type Payload struct {
 	Values interface{}
@@ -21,13 +20,8 @@ type Payload struct {
 	Exp    int64
 }
 
-//SetBasicUser add a basic username to validade a basic login
 func SetSampleSecret(ss string) {
 	sampleSecret = ss
-}
-
-func SetPayload(pl Payload) {
-	payload = pl
 }
 
 //SetBasicUser add a basic username to validade a basic login
@@ -38,6 +32,10 @@ func SetBasicUser(bu string) {
 //SetBasicPass add a basic password to validade a basic login
 func SetBasicPass(bp string) {
 	basicPass = bp
+}
+
+fund New(payload Payload) {
+	
 }
 
 //basicAuth authentication with basic login, use this to validate a request for a new JWT
@@ -70,8 +68,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// you would like it to contain.
 	var iat = time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"iss": payload.Iss,
-		"exp": iat + payload.Exp,
+		"iss": "auth",
+		"exp": iat + 300,
 		"iat": iat,
 	})
 
