@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -14,12 +13,10 @@ var basicUser = ""
 var basicPass = ""
 var sampleSecret = ""
 
-type Payload struct {
-	Values interface{}
-	Iss    string
-	Exp    int64
-}
+//Payloads - Map to populate your payloads
+var Payloads jwt.MapClaims
 
+//SetSampleSecret Define your secret key to signature the jwt
 func SetSampleSecret(ss string) {
 	sampleSecret = ss
 }
@@ -32,10 +29,6 @@ func SetBasicUser(bu string) {
 //SetBasicPass add a basic password to validade a basic login
 func SetBasicPass(bp string) {
 	basicPass = bp
-}
-
-fund New(payload Payload) {
-	
 }
 
 //basicAuth authentication with basic login, use this to validate a request for a new JWT
@@ -66,12 +59,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
-	var iat = time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"iss": "auth",
-		"exp": iat + 300,
-		"iat": iat,
-	})
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Payloads)
 
 	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString([]byte(sampleSecret))
