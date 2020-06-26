@@ -13,18 +13,21 @@ import (
 var basicUser = ""
 var basicPass = ""
 var sampleSecret = ""
+var payload Payload
 
 type Payload struct {
 	Values interface{}
 	Iss    string
-	Exp    int
+	Exp    int64
 }
-
-var PayloadValues Payload
 
 //SetBasicUser add a basic username to validade a basic login
 func SetSampleSecret(ss string) {
 	sampleSecret = ss
+}
+
+func SetPayload(pl Payload) {
+	payload = pl
 }
 
 //SetBasicUser add a basic username to validade a basic login
@@ -46,8 +49,8 @@ func basicAuth(r *http.Request) error {
 		return fmt.Errorf("authorization failed")
 	}
 
-	payload, _ := base64.StdEncoding.DecodeString(auth[1])
-	pair := strings.SplitN(string(payload), ":", 2)
+	pl, _ := base64.StdEncoding.DecodeString(auth[1])
+	pair := strings.SplitN(string(pl), ":", 2)
 
 	if len(pair) == 2 && pair[0] == basicUser && pair[1] == basicPass {
 		return nil
@@ -65,11 +68,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
-	const iat = time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix()
+	var iat = time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		PayloadValues.Values,
-		"iss": PayloadValues.Iss,
-		"exp": iat + PayloadValues.Exp,
+		"iss": payload.Iss,
+		"exp": iat + payload.Exp,
 		"iat": iat,
 	})
 
